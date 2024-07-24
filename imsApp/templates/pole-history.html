@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block pageContent %}
+<div class="container pt-3">
+     
+    <div class="card card-default border shadow rounded-0">
+        <div class="card-header">
+            <div class="w-100 d-flex justify-content-between">
+                <h5 class="fw-bolder card-title">Project History</h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <a href="{% url 'generate_pdf' transaction.pk%}" class="btn btn-primary">Download PDF</a>
+        </div>
+        <div class="card-body">
+            <div class="container-fluid">
+                <fieldset class="border-bottom">
+                    <legend>Project Details</legend>
+                    <dl>
+               
+                        <dt class="text-muted">Customer Name</dt>
+                        <dd class="ps-4">{{ transaction.customer }}</dd>
+                        <dt class="text-muted">Customer Code</dt>
+                        <dd class="ps-4">{{ transaction.customer_code }}</dd>
+                        <dt class="text-muted">Project Type</dt>
+                        <dd class="ps-4">{{ transaction.order_type }}</dd>
+                        <dt class="text-muted">Product Name</dt>
+                        <dd class="ps-4">{{ transaction.product_name }}</dd>
+                        <dt class="text-muted">Quantity</dt>
+                        <dd class="ps-4">{{ transaction.quantity }}</dd>
+                        <dt class="text-muted">Description</dt>
+                        <dd class="ps-4">{{ transaction.description }}</dd>
+                        <dt class="text-muted">Status</dt>
+                        <dd class="ps-4">{% if transaction.status == '1' %}
+                                 <span class="badge bg-info bg-gradient rounded-pill px-2">Active</span>
+                                 {% elif transaction.status == '2' %}
+                                 <span class="badge bg-success bg-gradient rounded-pill px-2">Completed</span>
+                                 {% else %}
+                                 <span class="badge bg-secondary bg-gradient rounded-pill px-2">Inactive</span>
+                                 {% endif %}</dd>      
+                    </dl>
+                </fieldset>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+   
+      
+        <div class="card-body">
+            <div class="container-fluid">
+                <h4 style="font-weight: bold">Product Used Details</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="font-weight: bold; font-size: 18px">Item Name</th>
+                            <th style="font-weight: bold; font-size: 18px">Discription</th>
+                            
+                        </tr>
+                    </thead>
+                    <tr>
+                        <th>Pipes</th>
+                        <td>
+                            <ul>
+                                {% for pipe in transaction.pipes %}
+                                <li>Pipe {{ forloop.counter }}      :      {{ pipe }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Arms</th>
+                        <td>
+                            <ul>
+                                {% for arm in transaction.arms %}
+                                <li>Arm {{ forloop.counter }}   :   {{ arm }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Paint</th>
+                        <td>
+                            <ul>
+                                {% for p in transaction.paint %}
+                                <li>Paint {{ forloop.counter }}  :   {{ p }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Arm Bend</th>
+                        <td>{{ transaction.arm_bend }}</td>
+                    </tr>
+                    <tr>
+                        <th>Arm Design</th>
+                        <td>{{ transaction.design }}</td>
+                    </tr>
+                    <tr>
+                        <th>Silver Melon</th>
+                        <td>{{ transaction.silver_melon}}</td>
+                    </tr>
+                    <tr>
+                        <th>Silver Base</th>
+                        <td>{{ transaction.silver_base }}</td>
+                    </tr>
+                    <tr>
+                        <th>CNC</th>
+                        <td>{{ transaction.cnc }}</td>
+                    </tr>
+                    <tr>
+                        <th>Melon</th>
+                        <td>{{ transaction.melon }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nipple</th>
+                        <td>{{ transaction.nipple}}</td>
+                    </tr>
+                    <tr>
+                        <th>Iron Strips</th>
+                        <td>{{ transaction.iron_strips }}</td>
+                    </tr>
+                    <tr>
+                        <th>Breaker Strips</th>
+                        <td>{{ transaction.breaker_strips }}</td>
+                    </tr>
+                    <tr>
+                        <th>Design</th>
+                        <td>{{ transaction.design }}</td>
+                    </tr>
+                    <tr>
+                        <th>Hinge</th>
+                        <td>{{ transaction.hinge}}</td>
+                    </tr>
+                    <tr>
+                        <th>Holder</th>
+                        <td>{{ transaction.holder }}</td>
+                    </tr>
+                    <tr>
+                        <th>Base Plate Size</th>
+                        <td>{{ transaction.base_plate_size }}</td>
+                    </tr>
+                    <tr>
+                        <th>Base Plate Shape</th>
+                        <td>{{ transaction.base_plate_shape }}</td>
+                    </tr>
+                    <tr>
+                        <th>Base Plate  Quantity</th>
+                        <td>{{ transaction.base_plate_hole_quantity }}</td>
+                    </tr>
+                    <tr>
+                        <th>Base Plate Thickness</th>
+                        <td>{{ transaction.base_plate_thickness }}</td>
+                    </tr>
+                    <tr>
+                        <th>J-Bolt Size</th>
+                        <td>{{ transaction.jbolt_size }}</td>
+                    </tr>
+                    <tr>
+                        <th>J-Bolt Thread</th>
+                        <td>{{ transaction.jbolt_thread }}</td>
+                    </tr>
+                    <tr>
+                        <th>J-Bolt Bend</th>
+                        <td>{{ transaction.jbolt_bend }}</td>
+                    </tr>
+                    
+                </table>
+        
+        </div>
+    </div>
+</div>
+
+{% endblock %}

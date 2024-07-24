@@ -1,0 +1,98 @@
+{% load customfilter %}
+<div class="container-fluid">
+    <form action=" " id="product-form">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ product.id }}">
+        <div class="form-group mb-3 ">
+            <label for="code" class="control-label">Product Code</label>
+            <input type="text" class="form-control rounded-0" id="code" name="code" value="{{ product.code }}" >
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="name" class="control-label">Name</label>
+            <input type="text" class="form-control rounded-0" id="name" name="name" value="{{ product.name }}" >
+        </div>
+        <div class="form-group mb-3">        
+            <label for="category" class="control-label">Category</label>
+            <select class="form-control rounded-0" id="category" name="category" >
+                <option value="">Select Category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3 ">        
+            <label for="name" class="control-label">Model</label>
+            <input type="text" class="form-control rounded-0" id="model" name="model" value="{{ product.model }}">
+        </div>
+        <div class="form-group mb-3 ">        
+            <label for="name" class="control-label">Wattage</label>
+            <input type="text" class="form-control rounded-0" id="model" name="model" value="{{ product.watt }}" >
+        </div>
+        <div class="form-group mb-3 ">        
+            <label for="name" class="control-label">Volt/Circuit</label>
+            <input type="text" class="form-control rounded-0" id="model" name="model" value="{{ product.volt }}" >
+        </div>
+        <div class="form-group mb-3 ">        
+            <label for="name" class="control-label">Size</label>
+            <input type="text" class="form-control rounded-0" id="model" name="model" value="{{ product.size }}" >
+        </div>
+        <div class="form-group mb-3 ">        
+            <label for="name" class="control-label">length</label>
+            <input type="text" class="form-control rounded-0" id="model" name="model" value="{{ product.length }}">
+        </div>
+        
+        <div class="form-group mb-3 ">
+            <label for="price" class="control-label">Price</label>
+            <input type="number" step="any" class="form-control rounded-0 text-end" id="price" name="price" value="{{ product.price }}">
+        </div>
+        
+    </form>
+</div>
+<script>
+    $(function() {
+        $('#product-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this)
+            $('.err-msg').remove();
+            var el = $('<div>')
+            el.addClass("alert alert-danger err-msg")
+            el.hide()
+            if (_this[0].checkValidity() == false) {
+                _this[0].reportValidity();
+                return false;
+            }
+            start_loader();
+            $.ajax({
+                url: "{% url 'save-product' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    alert("An error occured ", 'error');
+                    end_loader();
+                },
+                success: function(resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        el.removeClass("alert alert-danger err-msg ")
+                        location.reload()
+                    } else if (resp.status == 'failed' && !!resp.msg) {
+                        el.html(resp.msg)
+                    } else {
+                        el.text("An error occured ", 'error');
+                        end_loader();
+                        console.err(resp)
+                    }
+                    _this.prepend(el)
+                    el.show('slow')
+                    $("html, body, .modal ").scrollTop(0);
+                    end_loader()
+                }
+            })
+        })
+    })
+</script>

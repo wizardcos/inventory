@@ -1,0 +1,900 @@
+{% extends 'base.html' %} 
+{% load humanize %} 
+{% block pageContent %}
+<div class="container pt-3">
+    <div class="card card-default border shadow rounded-0">
+        <div class="card-header">
+            <div class="w-100 d-flex justify-content-between">
+                <h5 class="fw-bolder card-title">Sales Transaction</h5>
+            </div>
+        </div>
+    
+        <div class="card-body">
+            <div class="container-fluid">
+                <form action="{% url 'pole-page' %}" method="post" id="sale-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="transaction" value="1">
+                    
+                    <!-- Customer Name -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="customer" class="control-label">Customer Name</label>
+                                <input type="text" id="customer" name="customer" class="form-control rounded-0" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Type -->
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="order_type" class="control-label">Order Type</label>
+                                <select id="order_type" name="order_type" class="form-control rounded-0" required>
+                                    <option value="">Select Order Type</option>
+                                    <option value="street_light_pole">Street Light Pole</option>
+                                    <option value="fancy_street_pole">Fancy Street Pole</option>
+                                    <option value="simple_paint_pole">Simple Paint Pole</option>
+                                    <option value="dynamic_Pole">Dynamic Pole</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Details -->
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="product_name" class="control-label">Product Name</label>
+                                <input type="text" id="product_name" name="product_name" class="form-control rounded-0" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="quantity" class="control-label">Quantity</label>
+                                <input type="text" id="quantity" name="quantity" class="form-control rounded-0" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="customer_code" class="control-label">Customer Code</label>
+                                <input type="text" id="customer_code" name="customer_code" class="form-control rounded-0" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="description" class="control-label">Description</label>
+                                    <input type="text" id="description" name="description" class="form-control rounded-0" required>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                   
+                    <hr>
+                    <fieldset>
+                        <legend class="fw-bolder card-title">ITEMS</legend>
+                        <div class="row align-items-end">
+                            <legend class="hea">Pipes</legend>       
+                            {% for i in "123456" %}
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="pipe{{i}}" class="control-label">Pipe {{i}}</label>
+                                    <input type="text" id="pipe{{i}}" name="pipe{{i}}" class="form-control rounded-0" list="pipetypes"  placeholder="e.g., 11.75''(1.5)">
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <datalist id="pipetypes">
+                            <option value="1'' (0.5)">
+                            <option value="1'' (1)">
+                            <option value="1'' (1.5)">
+                            <option value="1'' (2)">
+                            <option value="1'' (2.5)">
+                            <option value="1'' (3)">
+                            <option value="1.25'' (0.5)">
+                            <option value="1.25'' (1)">
+                            <option value="1.25'' (1.5)">
+                            <option value="1.25'' (2)">
+                            <option value="1.25'' (2.5)">
+                            <option value="1.25'' (3)">
+                            <option value="1.5'' (0.5)">
+                            <option value="1.5'' (1)">
+                            <option value="1.5'' (1.5)">
+                            <option value="1.5'' (2)">
+                            <option value="1.5'' (2.5)">
+                            <option value="1.5'' (3)">
+                            <option value="1.75'' (0.5)">
+                            <option value="1.75'' (1)">
+                            <option value="1.75'' (1.5)">
+                            <option value="1.75'' (2)">
+                            <option value="1.75'' (2.5)">
+                            <option value="1.75'' (3)">
+                            <option value="2'' (0.5)">
+                            <option value="2'' (1.5)">
+                            <option value="2'' (2)">
+                            <option value="2'' (2.5)">
+                            <option value="2'' (3)">
+                                <option value="2.25'' (0.5)">
+                                    <option value="2.25'' (1)">
+                                    <option value="2.25'' (1.5)">
+                                    <option value="2.25'' (2)">
+                                    <option value="2.25'' (2.5)">
+                                    <option value="2.25'' (3)">
+                                        <option value="2.5'' (0.5)">
+                                            <option value="2.5'' (1)">
+                                            <option value="2.5'' (1.5)">
+                                            <option value="2.5'' (2)">
+                                            <option value="2.5'' (2.5)">
+                                            <option value="2.5'' (3)">
+                                                <option value="2.75'' (0.5)">
+                                                    <option value="2.75'' (1)">
+                                                    <option value="2.75'' (1.5)">
+                                                    <option value="2.75'' (2)">
+                                                    <option value="2.75'' (2.5)">
+                                                    <option value="2.75'' (3)">
+                                                        <option value="3'' (0.5)">
+                                                            <option value="3'' (1.5)">
+                                                            <option value="3'' (2)">
+                                                            <option value="3'' (2.5)">
+                                                            <option value="3'' (3)">
+                                               
+                                <option value="3.25'' (0.5)">
+                                    <option value="3.25'' (1)">
+                                    <option value="3.25'' (1.5)">
+                                    <option value="3.25'' (2)">
+                                    <option value="3.25'' (2.5)">
+                                    <option value="3.25'' (3)">
+                                        <option value="3.5'' (0.5)">
+                                            <option value="3.5'' (1)">
+                                            <option value="3.5'' (1.5)">
+                                            <option value="3.5'' (2)">
+                                            <option value="3.5'' (2.5)">
+                                            <option value="3.5'' (3)">
+                                                <option value="3.75'' (0.5)">
+                                                    <option value="3.75'' (1)">
+                                                    <option value="3.75'' (1.5)">
+                                                    <option value="3.75'' (2)">
+                                                    <option value="3.75'' (2.5)">
+                                                    <option value="3.75'' (3)">
+                                                        <option value="4'' (0.5)">
+                                                            <option value="4'' (1.5)">
+                                                            <option value="4'' (2)">
+                                                            <option value="4'' (2.5)">
+                                                            <option value="4'' (3)">
+                                                                                   
+                                <option value="4.25'' (0.5)">
+                                    <option value="4.25'' (1)">
+                                    <option value="4.25'' (1.5)">
+                                    <option value="4.25'' (2)">
+                                    <option value="4.25'' (2.5)">
+                                    <option value="4.25'' (3)">
+                                        <option value="4.5'' (0.5)">
+                                            <option value="4.5'' (1)">
+                                            <option value="4.5'' (1.5)">
+                                            <option value="4.5'' (2)">
+                                            <option value="4.5'' (2.5)">
+                                            <option value="4.5'' (3)">
+                                                <option value="4.75'' (0.5)">
+                                                    <option value="4.75'' (1)">
+                                                    <option value="4.75'' (1.5)">
+                                                    <option value="4.75'' (2)">
+                                                    <option value="4.75'' (2.5)">
+                                                    <option value="4.75'' (3)">
+                                                        <option value="5'' (0.5)">
+                                                            <option value="5'' (1.5)">
+                                                            <option value="5'' (2)">
+                                                            <option value="5'' (2.5)">
+                                                            <option value="5'' (3)">
+                                                                                   
+                                <option value="5.25'' (0.5)">
+                                    <option value="5.25'' (1)">
+                                    <option value="5.25'' (1.5)">
+                                    <option value="5.25'' (2)">
+                                    <option value="5.25'' (2.5)">
+                                    <option value="5.25'' (3)">
+                                        <option value="5.5'' (0.5)">
+                                            <option value="5.5'' (1)">
+                                            <option value="5.5'' (1.5)">
+                                            <option value="5.5'' (2)">
+                                            <option value="5.5'' (2.5)">
+                                            <option value="5.5'' (3)">
+                                                <option value="5.75'' (0.5)">
+                                                    <option value="5.75'' (1)">
+                                                    <option value="5.75'' (1.5)">
+                                                    <option value="5.75'' (2)">
+                                                    <option value="5.75'' (2.5)">
+                                                    <option value="5.75'' (3)">
+                                                        <option value="6'' (0.5)">
+                                                            <option value="6'' (1.5)">
+                                                            <option value="6'' (2)">
+                                                            <option value="6'' (2.5)">
+                                                            <option value="6'' (3)">
+                                                                                   
+                                <option value="6.25'' (0.5)">
+                                    <option value="6.25'' (1)">
+                                    <option value="6.25'' (1.5)">
+                                    <option value="6.25'' (2)">
+                                    <option value="6.25'' (2.5)">
+                                    <option value="6.25'' (3)">
+                                        <option value="6.5'' (0.5)">
+                                            <option value="6.5'' (1)">
+                                            <option value="6.5'' (1.5)">
+                                            <option value="6.5'' (2)">
+                                            <option value="6.5'' (2.5)">
+                                            <option value="6.5'' (3)">
+                                                <option value="6.75'' (0.5)">
+                                                    <option value="6.75'' (1)">
+                                                    <option value="6.75'' (1.5)">
+                                                    <option value="6.75'' (2)">
+                                                    <option value="6.75'' (2.5)">
+                                                    <option value="6.75'' (3)">
+                                                        <option value="7'' (0.5)">
+                                                            <option value="7'' (1.5)">
+                                                            <option value="7'' (2)">
+                                                            <option value="7'' (2.5)">
+                                                            <option value="7'' (3)">
+                                                                                   
+                                <option value="7.25'' (0.5)">
+                                    <option value="7.25'' (1)">
+                                    <option value="7.25'' (1.5)">
+                                    <option value="7.25'' (2)">
+                                    <option value="7.25'' (2.5)">
+                                    <option value="7.25'' (3)">
+                                        <option value="7.5'' (0.5)">
+                                            <option value="7.5'' (1)">
+                                            <option value="7.5'' (1.5)">
+                                            <option value="7.5'' (2)">
+                                            <option value="7.5'' (2.5)">
+                                            <option value="7.5'' (3)">
+                                                <option value="7.75'' (0.5)">
+                                                    <option value="7.75'' (1)">
+                                                    <option value="7.75'' (1.5)">
+                                                    <option value="7.75'' (2)">
+                                                    <option value="7.75'' (2.5)">
+                                                    <option value="7.75'' (3)">
+                                                        <option value="8'' (0.5)">
+                                                            <option value="8'' (1.5)">
+                                                            <option value="8'' (2)">
+                                                            <option value="8'' (2.5)">
+                                                            <option value="8'' (3)">
+                                                                                   
+                                <option value="9.25'' (0.5)">
+                                    <option value="9.25'' (1)">
+                                    <option value="9.25'' (1.5)">
+                                    <option value="9.25'' (2)">
+                                    <option value="9.25'' (2.5)">
+                                    <option value="9.25'' (3)">
+                                        <option value="9.5'' (0.5)">
+                                            <option value="9.5'' (1)">
+                                            <option value="9.5'' (1.5)">
+                                            <option value="9.5'' (2)">
+                                            <option value="9.5'' (2.5)">
+                                            <option value="9.5'' (3)">
+                                                <option value="9.75'' (0.5)">
+                                                    <option value="9.75'' (1)">
+                                                    <option value="9.75'' (1.5)">
+                                                    <option value="9.75'' (2)">
+                                                    <option value="9.75'' (2.5)">
+                                                    <option value="9.75'' (3)">
+                                                        <option value="10'' (0.5)">
+                                                            <option value="10'' (1.5)">
+                                                            <option value="10'' (2)">
+                                                            <option value="10'' (2.5)">
+                                                            <option value="10'' (3)">
+                                                                        
+                                <option value="11.25'' (0.5)">
+                                    <option value="11.25'' (1)">
+                                    <option value="11.25'' (1.5)">
+                                    <option value="11.25'' (2)">
+                                    <option value="11.25'' (2.5)">
+                                    <option value="11.25'' (3)">
+                                        <option value="11.5'' (0.5)">
+                                            <option value="11.5'' (1)">
+                                            <option value="11.5'' (1.5)">
+                                            <option value="11.5'' (2)">
+                                            <option value="11.5'' (2.5)">
+                                            <option value="11.5'' (3)">
+                                                <option value="11.75'' (0.5)">
+                                                    <option value="11.75'' (1)">
+                                                    <option value="11.75'' (1.5)">
+                                                    <option value="11.75'' (2)">
+                                                    <option value="11.75'' (2.5)">
+                                                    <option value="11.75'' (3)">
+                                                        <option value="12'' (0.5)">
+                                                            <option value="12'' (1.5)">
+                                                            <option value="12'' (2)">
+                                                            <option value="12'' (2.5)">
+                                                            <option value="12'' (3)">
+                                                                                   
+                                <option value="12.25'' (0.5)">
+                                    <option value="12.25'' (1)">
+                                    <option value="12.25'' (1.5)">
+                                    <option value="12.25'' (2)">
+                                    <option value="12.25'' (2.5)">
+                                    <option value="12.25'' (3)">
+                                        <option value="12.5'' (0.5)">
+                                            <option value="12.5'' (1)">
+                                            <option value="12.5'' (1.5)">
+                                            <option value="12.5'' (2)">
+                                            <option value="12.5'' (2.5)">
+                                            <option value="12.5'' (3)">
+                                                <option value="12.75'' (0.5)">
+                                                    <option value="12.75'' (1)">
+                                                    <option value="12.75'' (1.5)">
+                                                    <option value="12.75'' (2)">
+                                                    <option value="12.75'' (2.5)">
+                                                    <option value="12.75'' (3)">
+                                                        <option value="13'' (0.5)">
+                                                            <option value="13'' (1.5)">
+                                                            <option value="13'' (2)">
+                                                            <option value="13'' (2.5)">
+                                                            <option value="13'' (3)">
+                                                                                   
+                                <option value="13.25'' (0.5)">
+                                    <option value="13.25'' (1)">
+                                    <option value="13.25'' (1.5)">
+                                    <option value="13.25'' (2)">
+                                    <option value="13.25'' (2.5)">
+                                    <option value="13.25'' (3)">
+                                        <option value="13.5'' (0.5)">
+                                            <option value="13.5'' (1)">
+                                            <option value="13.5'' (1.5)">
+                                            <option value="13.5'' (2)">
+                                            <option value="13.5'' (2.5)">
+                                            <option value="13.5'' (3)">
+                                                <option value="13.75'' (0.5)">
+                                                    <option value="13.75'' (1)">
+                                                    <option value="13.75'' (1.5)">
+                                                    <option value="13.75'' (2)">
+                                                    <option value="13.75'' (2.5)">
+                                                    <option value="13.75'' (3)">
+                                                        <option value="14'' (0.5)">
+                                                            <option value="14'' (1.5)">
+                                                            <option value="14'' (2)">
+                                                            <option value="14'' (2.5)">
+                                                            <option value="14'' (3)">
+                                                                                   
+                                <option value="14.25'' (0.5)">
+                                    <option value="14.25'' (1)">
+                                    <option value="14.25'' (1.5)">
+                                    <option value="14.25'' (2)">
+                                    <option value="14.25'' (2.5)">
+                                    <option value="14.25'' (3)">
+                                        <option value="14.5'' (0.5)">
+                                            <option value="14.5'' (1)">
+                                            <option value="14.5'' (1.5)">
+                                            <option value="14.5'' (2)">
+                                            <option value="14.5'' (2.5)">
+                                            <option value="14.5'' (3)">
+                                                <option value="14.75'' (0.5)">
+                                                    <option value="14.75'' (1)">
+                                                    <option value="14.75'' (1.5)">
+                                                    <option value="14.75'' (2)">
+                                                    <option value="14.75'' (2.5)">
+                                                    <option value="14.75'' (3)">
+                                                        <option value="15'' (0.5)">
+                                                            <option value="15'' (1.5)">
+                                                            <option value="15'' (2)">
+                                                            <option value="15'' (2.5)">
+                                                            <option value="15'' (3)">
+                                                                                   
+                                <option value="15.25'' (0.5)">
+                                    <option value="15.25'' (1)">
+                                    <option value="15.25'' (1.5)">
+                                    <option value="15.25'' (2)">
+                                    <option value="15.25'' (2.5)">
+                                    <option value="15.25'' (3)">
+                                        <option value="15.5'' (0.5)">
+                                            <option value="15.5'' (1)">
+                                            <option value="15.5'' (1.5)">
+                                            <option value="15.5'' (2)">
+                                            <option value="15.5'' (2.5)">
+                                            <option value="15.5'' (3)">
+                                                <option value="15.75'' (0.5)">
+                                                    <option value="15.75'' (1)">
+                                                    <option value="15.75'' (1.5)">
+                                                    <option value="15.75'' (2)">
+                                                    <option value="15.75'' (2.5)">
+                                                    <option value="15.75'' (3)">
+                                                                                                                                                             
+                            </datalist>
+                            <div class="row align-items-end">
+                                <legend class="hea">Arms</legend> 
+                                {% for i in "123" %}
+                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="arm{{i}}" class="control-label">Arm {{i}}</label>
+                                        <input type="text" id="arm{{i}}" name="arm{{i}}" class="form-control rounded-0" list="armtypes"  placeholder="e.g., 1.5''(0.5)">
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <datalist id="armtypes">
+                                <option value="1'' (0.5)">
+                                <option value="1'' (1)">
+                                <option value="1'' (1.5)">
+                                <option value="1'' (2)">
+                                <option value="1'' (2.5)">
+                                <option value="1'' (3)">
+                                <option value="1.25'' (0.5)">
+                                <option value="1.25'' (1)">
+                                <option value="1.25'' (1.5)">
+                                <option value="1.25'' (2)">
+                                <option value="1.25'' (2.5)">
+                                <option value="1.25'' (3)">
+                                <option value="1.5'' (0.5)">
+                                <option value="1.5'' (1)">
+                                <option value="1.5'' (1.5)">
+                                <option value="1.5'' (2)">
+                                <option value="1.5'' (2.5)">
+                                <option value="1.5'' (3)">
+                                <option value="1.75'' (0.5)">
+                                <option value="1.75'' (1)">
+                                <option value="1.75'' (1.5)">
+                                <option value="1.75'' (2)">
+                                <option value="1.75'' (2.5)">
+                                <option value="1.75'' (3)">
+                                <option value="2'' (0.5)">
+                                <option value="2'' (1.5)">
+                                <option value="2'' (2)">
+                                <option value="2'' (2.5)">
+                                <option value="2'' (3)">
+                                    <option value="2.25'' (0.5)">
+                                        <option value="2.25'' (1)">
+                                        <option value="2.25'' (1.5)">
+                                        <option value="2.25'' (2)">
+                                        <option value="2.25'' (2.5)">
+                                        <option value="2.25'' (3)">
+                                            <option value="2.5'' (0.5)">
+                                                <option value="2.5'' (1)">
+                                                <option value="2.5'' (1.5)">
+                                                <option value="2.5'' (2)">
+                                                <option value="2.5'' (2.5)">
+                                                <option value="2.5'' (3)">
+                                                    <option value="2.75'' (0.5)">
+                                                        <option value="2.75'' (1)">
+                                                        <option value="2.75'' (1.5)">
+                                                        <option value="2.75'' (2)">
+                                                        <option value="2.75'' (2.5)">
+                                                        <option value="2.75'' (3)">
+                                                            <option value="3'' (0.5)">
+                                                                <option value="3'' (1.5)">
+                                                                <option value="3'' (2)">
+                                                                <option value="3'' (2.5)">
+                                                                <option value="3'' (3)">
+                                                   
+                                    <option value="3.25'' (0.5)">
+                                        <option value="3.25'' (1)">
+                                        <option value="3.25'' (1.5)">
+                                        <option value="3.25'' (2)">
+                                        <option value="3.25'' (2.5)">
+                                        <option value="3.25'' (3)">
+                                            <option value="3.5'' (0.5)">
+                                                <option value="3.5'' (1)">
+                                                <option value="3.5'' (1.5)">
+                                                <option value="3.5'' (2)">
+                                                <option value="3.5'' (2.5)">
+                                                <option value="3.5'' (3)">
+                                                    <option value="3.75'' (0.5)">
+                                                        <option value="3.75'' (1)">
+                                                        <option value="3.75'' (1.5)">
+                                                        <option value="3.75'' (2)">
+                                                        <option value="3.75'' (2.5)">
+                                                        <option value="3.75'' (3)">
+                                                            <option value="4'' (0.5)">
+                                                                <option value="4'' (1.5)">
+                                                                <option value="4'' (2)">
+                                                                <option value="4'' (2.5)">
+                                                                <option value="4'' (3)">
+                                                                                       
+                                    <option value="4.25'' (0.5)">
+                                        <option value="4.25'' (1)">
+                                        <option value="4.25'' (1.5)">
+                                        <option value="4.25'' (2)">
+                                        <option value="4.25'' (2.5)">
+                                        <option value="4.25'' (3)">
+                                            <option value="4.5'' (0.5)">
+                                                <option value="4.5'' (1)">
+                                                <option value="4.5'' (1.5)">
+                                                <option value="4.5'' (2)">
+                                                <option value="4.5'' (2.5)">
+                                                <option value="4.5'' (3)">
+                                                    <option value="4.75'' (0.5)">
+                                                        <option value="4.75'' (1)">
+                                                        <option value="4.75'' (1.5)">
+                                                        <option value="4.75'' (2)">
+                                                        <option value="4.75'' (2.5)">
+                                                        <option value="4.75'' (3)">
+                                                            <option value="5'' (0.5)">
+                                                                <option value="5'' (1.5)">
+                                                                <option value="5'' (2)">
+                                                                <option value="5'' (2.5)">
+                                                                <option value="5'' (3)">
+                                                                                       
+                                    <option value="5.25'' (0.5)">
+                                        <option value="5.25'' (1)">
+                                        <option value="5.25'' (1.5)">
+                                        <option value="5.25'' (2)">
+                                        <option value="5.25'' (2.5)">
+                                        <option value="5.25'' (3)">
+                                            <option value="5.5'' (0.5)">
+                                                <option value="5.5'' (1)">
+                                                <option value="5.5'' (1.5)">
+                                                <option value="5.5'' (2)">
+                                                <option value="5.5'' (2.5)">
+                                                <option value="5.5'' (3)">
+                                                    <option value="5.75'' (0.5)">
+                                                        <option value="5.75'' (1)">
+                                                        <option value="5.75'' (1.5)">
+                                                        <option value="5.75'' (2)">
+                                                        <option value="5.75'' (2.5)">
+                                                        <option value="5.75'' (3)">
+                                                            <option value="6'' (0.5)">
+                                                                <option value="6'' (1.5)">
+                                                                <option value="6'' (2)">
+                                                                <option value="6'' (2.5)">
+                                                                <option value="6'' (3)">
+                                                                                       
+                                    <option value="6.25'' (0.5)">
+                                        <option value="6.25'' (1)">
+                                        <option value="6.25'' (1.5)">
+                                        <option value="6.25'' (2)">
+                                        <option value="6.25'' (2.5)">
+                                        <option value="6.25'' (3)">
+                                            <option value="6.5'' (0.5)">
+                                                <option value="6.5'' (1)">
+                                                <option value="6.5'' (1.5)">
+                                                <option value="6.5'' (2)">
+                                                <option value="6.5'' (2.5)">
+                                                <option value="6.5'' (3)">
+                                                    <option value="6.75'' (0.5)">
+                                                        <option value="6.75'' (1)">
+                                                        <option value="6.75'' (1.5)">
+                                                        <option value="6.75'' (2)">
+                                                        <option value="6.75'' (2.5)">
+                                                        <option value="6.75'' (3)">
+                                                            <option value="7'' (0.5)">
+                                                                <option value="7'' (1.5)">
+                                                                <option value="7'' (2)">
+                                                                <option value="7'' (2.5)">
+                                                                <option value="7'' (3)">
+                                                                                       
+                                    <option value="7.25'' (0.5)">
+                                        <option value="7.25'' (1)">
+                                        <option value="7.25'' (1.5)">
+                                        <option value="7.25'' (2)">
+                                        <option value="7.25'' (2.5)">
+                                        <option value="7.25'' (3)">
+                                            <option value="7.5'' (0.5)">
+                                                <option value="7.5'' (1)">
+                                                <option value="7.5'' (1.5)">
+                                                <option value="7.5'' (2)">
+                                                <option value="7.5'' (2.5)">
+                                                <option value="7.5'' (3)">
+                                                    <option value="7.75'' (0.5)">
+                                                        <option value="7.75'' (1)">
+                                                        <option value="7.75'' (1.5)">
+                                                        <option value="7.75'' (2)">
+                                                        <option value="7.75'' (2.5)">
+                                                        <option value="7.75'' (3)">
+                                                            <option value="8'' (0.5)">
+                                                                <option value="8'' (1.5)">
+                                                                <option value="8'' (2)">
+                                                                <option value="8'' (2.5)">
+                                                                <option value="8'' (3)">
+                                                                                       
+                                    <option value="9.25'' (0.5)">
+                                        <option value="9.25'' (1)">
+                                        <option value="9.25'' (1.5)">
+                                        <option value="9.25'' (2)">
+                                        <option value="9.25'' (2.5)">
+                                        <option value="9.25'' (3)">
+                                            <option value="9.5'' (0.5)">
+                                                <option value="9.5'' (1)">
+                                                <option value="9.5'' (1.5)">
+                                                <option value="9.5'' (2)">
+                                                <option value="9.5'' (2.5)">
+                                                <option value="9.5'' (3)">
+                                                    <option value="9.75'' (0.5)">
+                                                        <option value="9.75'' (1)">
+                                                        <option value="9.75'' (1.5)">
+                                                        <option value="9.75'' (2)">
+                                                        <option value="9.75'' (2.5)">
+                                                        <option value="9.75'' (3)">
+                                                            <option value="10'' (0.5)">
+                                                                <option value="10'' (1.5)">
+                                                                <option value="10'' (2)">
+                                                                <option value="10'' (2.5)">
+                                                                <option value="10'' (3)">
+                                                                            
+                                    <option value="11.25'' (0.5)">
+                                        <option value="11.25'' (1)">
+                                        <option value="11.25'' (1.5)">
+                                        <option value="11.25'' (2)">
+                                        <option value="11.25'' (2.5)">
+                                        <option value="11.25'' (3)">
+                                            <option value="11.5'' (0.5)">
+                                                <option value="11.5'' (1)">
+                                                <option value="11.5'' (1.5)">
+                                                <option value="11.5'' (2)">
+                                                <option value="11.5'' (2.5)">
+                                                <option value="11.5'' (3)">
+                                                    <option value="11.75'' (0.5)">
+                                                        <option value="11.75'' (1)">
+                                                        <option value="11.75'' (1.5)">
+                                                        <option value="11.75'' (2)">
+                                                        <option value="11.75'' (2.5)">
+                                                        <option value="11.75'' (3)">
+                                                            <option value="12'' (0.5)">
+                                                                <option value="12'' (1.5)">
+                                                                <option value="12'' (2)">
+                                                                <option value="12'' (2.5)">
+                                                                <option value="12'' (3)">
+                                                                                       
+                                    <option value="12.25'' (0.5)">
+                                        <option value="12.25'' (1)">
+                                        <option value="12.25'' (1.5)">
+                                        <option value="12.25'' (2)">
+                                        <option value="12.25'' (2.5)">
+                                        <option value="12.25'' (3)">
+                                            <option value="12.5'' (0.5)">
+                                                <option value="12.5'' (1)">
+                                                <option value="12.5'' (1.5)">
+                                                <option value="12.5'' (2)">
+                                                <option value="12.5'' (2.5)">
+                                                <option value="12.5'' (3)">
+                                                    <option value="12.75'' (0.5)">
+                                                        <option value="12.75'' (1)">
+                                                        <option value="12.75'' (1.5)">
+                                                        <option value="12.75'' (2)">
+                                                        <option value="12.75'' (2.5)">
+                                                        <option value="12.75'' (3)">
+                                                            <option value="13'' (0.5)">
+                                                                <option value="13'' (1.5)">
+                                                                <option value="13'' (2)">
+                                                                <option value="13'' (2.5)">
+                                                                <option value="13'' (3)">
+                                                                                       
+                                    <option value="13.25'' (0.5)">
+                                        <option value="13.25'' (1)">
+                                        <option value="13.25'' (1.5)">
+                                        <option value="13.25'' (2)">
+                                        <option value="13.25'' (2.5)">
+                                        <option value="13.25'' (3)">
+                                            <option value="13.5'' (0.5)">
+                                                <option value="13.5'' (1)">
+                                                <option value="13.5'' (1.5)">
+                                                <option value="13.5'' (2)">
+                                                <option value="13.5'' (2.5)">
+                                                <option value="13.5'' (3)">
+                                                    <option value="13.75'' (0.5)">
+                                                        <option value="13.75'' (1)">
+                                                        <option value="13.75'' (1.5)">
+                                                        <option value="13.75'' (2)">
+                                                        <option value="13.75'' (2.5)">
+                                                        <option value="13.75'' (3)">
+                                                            <option value="14'' (0.5)">
+                                                                <option value="14'' (1.5)">
+                                                                <option value="14'' (2)">
+                                                                <option value="14'' (2.5)">
+                                                                <option value="14'' (3)">
+                                                                                       
+                                    <option value="14.25'' (0.5)">
+                                        <option value="14.25'' (1)">
+                                        <option value="14.25'' (1.5)">
+                                        <option value="14.25'' (2)">
+                                        <option value="14.25'' (2.5)">
+                                        <option value="14.25'' (3)">
+                                            <option value="14.5'' (0.5)">
+                                                <option value="14.5'' (1)">
+                                                <option value="14.5'' (1.5)">
+                                                <option value="14.5'' (2)">
+                                                <option value="14.5'' (2.5)">
+                                                <option value="14.5'' (3)">
+                                                    <option value="14.75'' (0.5)">
+                                                        <option value="14.75'' (1)">
+                                                        <option value="14.75'' (1.5)">
+                                                        <option value="14.75'' (2)">
+                                                        <option value="14.75'' (2.5)">
+                                                        <option value="14.75'' (3)">
+                                                            <option value="15'' (0.5)">
+                                                                <option value="15'' (1.5)">
+                                                                <option value="15'' (2)">
+                                                                <option value="15'' (2.5)">
+                                                                <option value="15'' (3)">
+                                                                                       
+                                    <option value="15.25'' (0.5)">
+                                        <option value="15.25'' (1)">
+                                        <option value="15.25'' (1.5)">
+                                        <option value="15.25'' (2)">
+                                        <option value="15.25'' (2.5)">
+                                        <option value="15.25'' (3)">
+                                            <option value="15.5'' (0.5)">
+                                                <option value="15.5'' (1)">
+                                                <option value="15.5'' (1.5)">
+                                                <option value="15.5'' (2)">
+                                                <option value="15.5'' (2.5)">
+                                                <option value="15.5'' (3)">
+                                                    <option value="15.75'' (0.5)">
+                                                        <option value="15.75'' (1)">
+                                                        <option value="15.75'' (1.5)">
+                                                        <option value="15.75'' (2)">
+                                                        <option value="15.75'' (2.5)">
+                                                        <option value="15.75'' (3)">
+                                                                                                                                                                 
+                                </datalist>
+                                <!-- Paints -->
+                                <legend class="hea">Paint</legend>       
+                                <div class="row">
+                            {% for i in "123" %}
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="paint{{i}}" class="control-label">Paint {{i}}</label>
+                                    <input type="text" id="paint{{i}}" name="paint{{i}}" class="form-control rounded-0" placeholder="e.g., Black/Golden" >
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div>
+                      <!-- Arm related -->
+<legend class="hea">Arm Related</legend>
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="arm_bend" class="control-label">Arm Bend</label>
+            <input type="text" id="arm_bend" name="arm_bend" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="arm_design" class="control-label">Arm Design</label>
+            <input type="text" id="arm_design" name="arm_design" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="silver_base" class="control-label">Silver Base</label>
+            <input type="text" id="silver_base" name="silver_base" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="silver_melon" class="control-label">Silver Melon</label>
+            <input type="text" id="silver_melon" name="silver_melon" class="form-control rounded-0">
+        </div>
+    </div>
+</div>
+
+                                 <!-- Base Plate -->
+                        <legend class="hea">Base Plate</legend>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="size" class="control-label">Size</label>
+                                    <input type="text" id="size" name="size" class="form-control rounded-0" placeholder="e.g., 7''" >
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="shape" class="control-label">Shape</label>
+                                    <input type="text" id="shape" name="shape" class="form-control rounded-0" placeholder="e.g., Circular" >
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="hole_quantity" class="control-label">Quantity</label>
+                                    <input type="text" id="hole_quantity" name="hole_quantity" class="form-control rounded-0" placeholder="e.g., 4" >
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="thickness" class="control-label">Thickness</label>
+                                    <input type="text" id="thickness" name="thickness" class="form-control rounded-0" placeholder="e.g., 0.5''" >
+                                </div>
+                            </div>
+                        </div>
+                            <!-- strips -->
+<legend class="hea">Iron Strips / Cnc & other</legend>
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="cnc" class="control-label">CNC</label>
+            <input type="text" id="cnc" name="cnc" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="melon" class="control-label">Melon</label>
+            <input type="text" id="melon" name="melon" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="nipple" class="control-label">Nipple</label>
+            <input type="text" id="nipple" name="nipple" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="iron_strips" class="control-label">Iron Strips</label>
+            <input type="text" id="iron_strips" name="iron_strips" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="breaker_strips" class="control-label">Breaker Strip</label>
+            <input type="text" id="breaker_strips" name="breaker_strips" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="design" class="control-label">Design</label>
+            <input type="text" id="design" name="design" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="hinge" class="control-label">Hinge</label>
+            <input type="text" id="hinge" name="hinge" class="form-control rounded-0">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="form-group">
+            <label for="holder" class="control-label">Holder</label>
+            <input type="text" id="holder" name="holder" class="form-control rounded-0">
+        </div>
+    </div>
+</div>
+                        <!-- J Bolts -->
+                        <legend class="hea">J Bolts / Status</legend>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="jsize" class="control-label">Size</label>
+                                    <input type="text" id="jsize" name="jsize" class="form-control rounded-0" placeholder="e.g., 7''" >
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="thread" class="control-label">Thread</label>
+                                    <input type="text" id="thread" name="thread" class="form-control rounded-0" placeholder="e.g., M6">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="bend" class="control-label">Bend</label>
+                                    <input type="text" id="bend" name="bend" class="form-control rounded-0" placeholder="e.g., 90°" >
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4    col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="status" class="control-label">Status</label>
+                                        <select id="status" name="status" class="form-control rounded-0" >
+                                            <option value="">Select Status</option>
+                                            <option value="1">Active</option>
+                                            <option value="2">Completed</option>
+                                            <option value="3">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>          
+                    </fieldset>
+                    
+                    <div class="card-footer py-1 text-end">
+                        <button class="btn btn-primary bg-gradient px-3 rounded-0" type="submit"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock pageContent %}
+{% block ScriptBlock %}
+<script>
+    document.getElementById('sale-form').addEventListener('submit', function(e) {
+    });
+</script>
+{% endblock ScriptBlock %}

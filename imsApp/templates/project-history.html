@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load customfilter %}
+{% load humanize %} 
+{% block pageContent %}
+<div class="container pt-3">
+    <div class="card card-default border shadow rounded-0">
+        <div class="card-header">
+            <div class="w-100 d-flex justify-content-between">
+                <h5 class="fw-bolder card-title">Project History</h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <a href="{% url 'generate_pdf_light' invoice.pk %}" class="btn btn-primary">Download PDF</a>
+        </div>
+            <div class="container-fluid">
+                <fieldset class="border-bottom">
+                    <legend>Project Details</legend>
+                    <dl>
+                        <dt class="text-muted">Project Code</dt>
+                        <dd class="ps-4">{{ invoice.transaction }}</dd>
+                        <dt class="text-muted">Customer Name</dt>
+                        <dd class="ps-4">{{ invoice.customer }}</dd>
+                        <dt class="text-muted">Customer Code</dt>
+                        <dd class="ps-4">{{ invoice.customer_code }}</dd>
+                        <dt class="text-muted">Project Type</dt>
+                        <dd class="ps-4">{{ invoice.order_type }}</dd>
+                        <dt class="text-muted">Product Name</dt>
+                        <dd class="ps-4">{{ invoice.product_name }}</dd>
+                        <dt class="text-muted">Quantity</dt>
+                        <dd class="ps-4">{{ invoice.quantity }}</dd>
+                        <dt class="text-muted">description</dt>
+                        <dd class="ps-4">{{ invoice.description }}</dd>
+                        <dt class="text-muted">Status</dt>
+                        <dd class="ps-4">{% if invoice.status == '1' %}
+                        <span class="badge bg-info bg-gradient rounded-pill px-2">Active</span>
+                        {% elif invoice.status == '2' %}
+                        <span class="badge bg-success bg-gradient rounded-pill px-2">Completed</span>
+                        {% else %}
+                        <span class="badge bg-secondary bg-gradient rounded-pill px-2">Inactive</span>
+                        {% endif %}</dd>
+                        <dt class="text-muted">Total Amount</dt>
+                        <dd class="ps-4">{{ invoice.total|floatformat:2|intcomma }}</dd>      
+                    </dl>
+                </fieldset>
+                <fieldset>
+                    <legend style="font-weight: bold">Products Used</legend>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: bold; font-size: 18px">Product Name</th>
+                                <th style="font-weight: bold; font-size: 18px">Quantity</th>
+                                <th style="font-weight: bold; font-size: 18px">Price</th>
+                                <th style="font-weight: bold; font-size: 18px">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in invoice_items %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.price|floatformat:2|intcomma }}</td>
+                                <td>{{ item.quantity|multiply:item.price|floatformat:2|intcomma }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock pageContent %}
