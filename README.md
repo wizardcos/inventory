@@ -47,31 +47,32 @@ Welcome to the Django Inventory Management System! This web application is desig
    git clone https://github.com/wizardcos/inventory.git
    ```
    
-2.Navigate to the Project Directory
+2. **Navigate to the Project Directory**
 
      ```bash
      cd inventory
      ```
-3.Create and Activate a Virtual Environment
+3. **Create  nd Activate a Virtual Environment**
 ```sh
     python -m venv env
      source env/bin/activate  # On Windows use `env\Scripts\activate`
    ```
 
-4.Install Requirements
-      ```bash
+4. **Install Requirements**
+```sh
     pip install -r requirements.txt
-      ```
-5.Apply Migrations
-      ```bash
+   ```
+      
+5. **Apply Migrations**
+      ```sh
     python manage.py migrate
       ```
-6.Create a Superuser
-      ```bash
+6. **Create a Superuser**
+      ```sh
     python manage.py createsuperuser
      ```
-7.Run the Development Server
-      ```bash
+7. **Run the Development Server**
+      ```sh
     python manage.py runserver
       ```
  ## Usage
