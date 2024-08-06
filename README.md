@@ -53,45 +53,55 @@ Welcome to the Django Inventory Management System! This web application is desig
      cd inventory
      ```
 3. **Create  nd Activate a Virtual Environment**
-```sh
+   
+     ```sh
     python -m venv env
      source env/bin/activate  # On Windows use `env\Scripts\activate`
-   ```
+      ```
 
-4. **Install Requirements**
-```sh
+5. **Install Requirements**
+   
+    ```sh
     pip install -r requirements.txt
-   ```
+     ```
       
 5. **Apply Migrations**
+   
       ```sh
     python manage.py migrate
       ```
-6. **Create a Superuser**
+7. **Create a Superuser**
+   
       ```sh
     python manage.py createsuperuser
      ```
-7. **Run the Development Server**
+9. **Run the Development Server**
+    
       ```sh
     python manage.py runserver
       ```
  ## Usage
  <ul>
 <li>Access the Application: Open your web browser and navigate to http://127.0.0.1:8000 to access the application.</li>
+   
 <li>Admin Interface: Use the Django admin interface at http://127.0.0.1:8000/admin to manage inventory, projects, and user accounts.</li>
 </ul>
-## Contributing
+ ## Contributing
 Contributions are welcome! Please follow these steps to contribute:
 <ol>
 
 <li>Fork the repository.</li>
+
 <li>Create a new branch for your feature or bug fix.</li>
+
 <li>Commit your changes.</li>
+
 <li>Push your branch to GitHub.</li>
+
 <li>Open a pull request.</li>
 </ol>
-## License
+ ## License
 This project is open source but I would appreciate it if you give credit.
 
-## Contact
+ ## Contact
 For any questions or feedback, please reach out to [taharajpoot204@gmail.com].
