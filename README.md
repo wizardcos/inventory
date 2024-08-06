@@ -53,10 +53,11 @@ Welcome to the Django Inventory Management System! This web application is desig
      cd inventory
      ```
 3.Create and Activate a Virtual Environment
-       ```bash
-     python -m venv env
+```sh
+    python -m venv env
      source env/bin/activate  # On Windows use `env\Scripts\activate`
-       ```
+   ```
+
 4.Install Requirements
       ```bash
     pip install -r requirements.txt
