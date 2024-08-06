@@ -86,7 +86,8 @@ Welcome to the Django Inventory Management System! This web application is desig
    
 <li>Admin Interface: Use the Django admin interface at http://127.0.0.1:8000/admin to manage inventory, projects, and user accounts.</li>
 </ul>
- ## Contributing
+
+## Contribution
 Contributions are welcome! Please follow these steps to contribute:
 <ol>
 
@@ -100,6 +101,7 @@ Contributions are welcome! Please follow these steps to contribute:
 
 <li>Open a pull request.</li>
 </ol>
+
  ## License
 This project is open source but I would appreciate it if you give credit.
 
