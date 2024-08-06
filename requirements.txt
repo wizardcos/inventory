@@ -1,7 +1,4 @@
-Django==4.0.3
-Pillow
-cryptography
-
+Django         4.0.3
 asgiref        3.8.1
 Brotli         1.1.0
 cffi           1.16.0

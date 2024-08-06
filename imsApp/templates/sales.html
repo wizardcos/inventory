@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% load humanize %} {% block pageContent %}
+{% extends 'base.html' %}
+{% load humanize %}
+{% block pageContent %}
 <div class="container pt-3">
     <div class="card card-default border shadow rounded-0">
         <div class="card-header">
@@ -7,8 +9,8 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="conteiner-fluid">
-                <form action="" id="sale-form">
+            <div class="container-fluid">
+                <form action="" method="post" id="sale-form">
                     {% csrf_token %}
                     <input type="hidden" name="transaction" value="1">
                     <div class="row">
@@ -19,7 +21,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="form-group">
@@ -35,28 +36,27 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                          <div class="form-group">
-                            <label for="product_name" class="control-label">Product Name</label>
-                            <input type="text" id="product_name" name="product_name" class="form-control rounded-0" required>
-                          </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                          <div class="form-group">
-                            <label for="quantity" class="control-label">Quantity</label>
-                            <input type="text" id="quantity" name="quantity" class="form-control rounded-0" required>
-                          </div>
+                            <div class="form-group">
+                                <label for="product_name" class="control-label">Product Name</label>
+                                <input type="text" id="product_name" name="product_name" class="form-control rounded-0" required>
+                            </div>
                         </div>
                         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                             <div class="form-group">
-                              <label for="quantity" class="control-label">Customer Code</label>
-                              <input type="text" id="customer_codecode" name="customer_code" class="form-control rounded-0" required>
+                                <label for="quantity" class="control-label">Quantity</label>
+                                <input type="text" id="quantity" name="quantity" class="form-control rounded-0" required>
                             </div>
-                          </div>
-                      </div>
-                      <div class="row">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="customer_code" class="control-label">Customer Code</label>
+                                <input type="text" id="customer_code" name="customer_code" class="form-control rounded-0" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="form-group">
                                 <label for="description" class="control-label">Description</label>
@@ -64,26 +64,25 @@
                             </div>
                         </div>
                     </div>
-                </div>
                     <hr>
                     <fieldset>
                         <legend class="fw-bolder card-title">ITEMS</legend>
                         <div class="row align-items-end">
                             {% for category in categories %}
-    <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
-        <div class="form-group">
-            <label for="pid_{{ category.pk }}" class="control-label">{{ category.name }}</label>
-            <select id="pid_{{ category.pk }}" class="form-control rounded-0">
-                <option value="" selected="selected" disabled="disabled"></option>
-                {% for product in category.products.all %}
-                    <option value="{{ product.pk }}">{{ product.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-{% endfor %}
+                            <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="pid_{{ category.pk }}" class="control-label">{{ category.name }}</label>
+                                    <select id="pid_{{ category.pk }}" class="form-control rounded-0">
+                                        <option value="" selected="selected" disabled="disabled"></option>
+                                        {% for product in category.products.all %}
+                                        <option value="{{ product.pk }}">{{ product.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
                             <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-                                <button class="btn btn-sm btn-light border bg-gradient rounded-0 shadow-0" id="add_to_list" type="button"><i class="fa fa-plus"></i> Add to List</button>
+                                <button class="btn btn-primary bg-gradient px-3 rounded-0" id="add_to_list" type="button"><i class="fa fa-plus"></i> Add to List</button>
                             </div>
                         </div>
                         <br>
@@ -136,7 +135,7 @@
         <td class="align-middle text-end px-2 py-1 product_total">0.00</td>
     </tr>
 </noscript>
-{% endblock pageContent %} 
+{% endblock pageContent %}
 
 {% block ScriptBlock %}
 <script>
@@ -146,7 +145,7 @@
             var price = $(this).find('.input-price').val();
             var quantity = $(this).find('.input-quantity').val();
             price = price > 0 ? price : 0;
-            quantity = quantity > 0 ? quantity : 0
+            quantity = quantity > 0 ? quantity : 0;
             var total = parseFloat(price) * parseFloat(quantity);
             $(this).find('.product_total').text(parseFloat(total).toLocaleString('en-US'));
             gtotal += parseFloat(total);
@@ -156,124 +155,111 @@
     }
 
     $(function() {
-    $('select[id^="pid_"]').select2({
-        placeholder: 'Please Select Product here',
-        width: "100%"
-    });
-
-    $('#add_to_list').click(function() {
-        var selectedProducts = [];
-        $('select[id^="pid_"]').each(function() {
-            if ($(this).val()) {
-                selectedProducts.push($(this).val());
-            }
+        $('select[id^="pid_"]').select2({
+            placeholder: 'Please Select Product here',
+            width: "100%"
         });
 
-        if (selectedProducts.length === 0) {
-            return false;
-        }
+        $('#add_to_list').click(function() {
+            var selectedProducts = [];
+            $('select[id^="pid_"]').each(function() {
+                if ($(this).val()) {
+                    selectedProducts.push($(this).val());
+                }
+            });
 
-        start_loader();
+            if (selectedProducts.length === 0) {
+                return false;
+            }
 
-        selectedProducts.forEach(function(pid) {
+            start_loader();
+
+            selectedProducts.forEach(function(pid) {
+                $.ajax({
+                    url: '{% url "get-product" %}/' + pid,
+                    method: "GET",
+                    dataType: 'json',
+                    error: function(err) {
+                        alert('An error occurred while fetching product data');
+                        end_loader();
+                    },
+                    success: function(resp) {
+                        if (resp.status === 'success') {
+                            var data = resp.data;
+                            if ($('#product-tbl tbody tr[data-id="' + data.id + '"]').length > 0) {
+                                alert("Product already on the list");
+                            } else {
+                                var tr = $($('noscript#prod-item-clone').html()).clone();
+                                tr.attr('data-id', data.id);
+                                tr.find('input[name="pid[]"]').val(data.id);
+                                tr.find('input[name="price[]"]').val(data.price);
+                                tr.find('.product_name').text(data.product);
+                                tr.find('.product_price').text(parseFloat(data.price).toLocaleString('en-US'));
+                                tr.find('.product_total').text(parseFloat(data.price).toLocaleString('en-US'));
+                                $('#product-tbl tbody').append(tr);
+                                tr.find('[name="quantity[]"]').on('change input', function(e) {
+                                    calc();
+                                });
+                                calc();
+                                tr.find('.rem-item').click(function() {
+                                    tr.remove();
+                                    calc();
+                                });
+                            }
+                            $('select[id^="pid_"]').val('').trigger('change');
+                        } else if (resp.msg) {
+                            alert(resp.msg);
+                        }
+                        end_loader();
+                    }
+                });
+            });
+        });
+
+        $('#sale-form').submit(function(e) {
+            e.preventDefault();
+            var _this = $(this);
+            $('.err-msg').remove();
+            var el = $('<div>').addClass("alert alert-danger err-msg").hide();
+
+            if (!_this[0].checkValidity()) {
+                _this[0].reportValidity();
+                return false;
+            }
+
+            start_loader();
             $.ajax({
-                url: '{% url "get-product" %}/' + pid,
-                method: "GET",
+                url: "{% url 'save-sales' %}",
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
                 dataType: 'json',
                 error: function(err) {
-                    alert('An error occurred while fetching product data');
+                    console.log(err);
+                    alert("An error occurred ", 'error');
                     end_loader();
                 },
                 success: function(resp) {
-                    if (resp.status === 'success') {
-                        var data = resp.data;
-                        if ($('#product-tbl tbody tr[data-id="' + data.id + '"]').length > 0) {
-                            alert("Product already on the list");
-                        } else {
-                            var tr = $($('noscript#prod-item-clone').html()).clone();
-                            tr.attr('data-id', data.id);
-                            tr.find('input[name="pid[]"]').val(data.id);
-                            tr.find('input[name="price[]"]').val(data.price);
-                            tr.find('.product_name').text(data.product); 
-                            tr.find('.product_price').text(parseFloat(data.price).toLocaleString('en-US'));
-                            tr.find('.product_total').text(parseFloat(data.price).toLocaleString('en-US'));
-                            $('#product-tbl tbody').append(tr);
-                            tr.find('[name="quantity[]"]').on('change input', function(e) {
-                                calc();
-                            });
-                            calc();
-                            tr.find('[name="quantity[]"]').attr('name', "quantity[" + data.id + "]");
-                            tr.find('[name="price[]"]').attr('name', "price[" + data.id + "]");
-                            tr.find('.rem-item').click(function() {
-                                tr.remove();
-                                calc();
-                            });
-                        }
-                        $('select[id^="pid_"]').val('').trigger('change');
-                    } else if (resp.msg) {
-                        alert(resp.msg);
+                    if (typeof resp === 'object' && resp.status === 'success') {
+                        el.removeClass("alert alert-danger err-msg ");
+                        location.reload();
+                    } else if (resp.status === 'failed' && resp.msg) {
+                        el.html(resp.msg);
+                    } else {
+                        el.text("An error occurred ", 'error');
+                        end_loader();
+                        console.error(resp);
                     }
+                    _this.prepend(el);
+                    el.show('slow');
+                    $("html, body, .modal ").scrollTop(0);
                     end_loader();
                 }
             });
         });
     });
-
-    $(document).on('click', '.rem-item', function() {
-        $(this).closest('tr').remove();
-        calc();
-    });
-
-    $(document).on('change input', '[name="quantity[]"]', function(e) {
-        calc();
-    });
-
-    $('#sale-form').submit(function(e) {
-        e.preventDefault();
-        $('#orderTypeInput').val($('#order').val());
-        $('#quantityInput').val($('#quantity').val());
-        var _this = $(this);
-        $('.err-msg').remove();
-        var el = $('<div>').addClass("alert alert-danger err-msg").hide();
-
-        if (!_this[0].checkValidity()) {
-            _this[0].reportValidity();
-            return false;
-        }
-
-        start_loader();
-        $.ajax({
-            url: "{% url 'save-sales' %}",
-            data: new FormData($(this)[0]),
-            cache: false,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            type: 'POST',
-            dataType: 'json',
-            error: function(err) {
-                console.log(err);
-                alert("An error occurred ", 'error');
-                end_loader();
-            },
-            success: function(resp) {
-                if (typeof resp === 'object' && resp.status === 'success') {
-                    el.removeClass("alert alert-danger err-msg ");
-                    location.reload();
-                } else if (resp.status === 'failed' && resp.msg) {
-                    el.html(resp.msg);
-                } else {
-                    el.text("An error occurred ", 'error');
-                    end_loader();
-                    console.error(resp);
-                }
-                _this.prepend(el);
-                el.show('slow');
-                $("html, body, .modal ").scrollTop(0);
-                end_loader();
-            }
-        });
-    });
-});
 </script>
-{% endblock ScriptBlock %}
+{% endblock %}

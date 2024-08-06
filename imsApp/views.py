@@ -15,7 +15,7 @@ from reportlab.lib.styles import getSampleStyleSheet,ParagraphStyle
 from reportlab.lib.pagesizes import letter
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePasswords, SaveCategory, SaveProduct, SaveInvoice, SaveInvoiceItem,PoleTransactionForm
 from imsApp.models import Category, Product, Stock,PoleTransaction, Invoice, Invoice_Item
 from cryptography.fernet import Fernet
@@ -336,54 +336,6 @@ def delete_stock(request):
 
 
 @login_required
-def generate_inventory_pdf(request):
-    products = Product.objects.all()
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="inventory.pdf"'
-    
-    doc = SimpleDocTemplate(response, pagesize=letter)
-    styles = getSampleStyleSheet()
-    elements = []
-    
-  
-    
-    elements.append(Paragraph('<b>TEKSUN LIGHTS PVT. LTD</b>', styles["Title"]))
-    elements.append(Spacer(1, 12))
-    
-    # Title
-    elements.append(Paragraph("Inventory", styles["Title"]))
-    elements.append(Spacer(1, 12))
-    
-    # Inventory Table
-    inventory_data = [
-        ["Sr.", "Product", "Quantity"]
-    ]
-    
-    for idx, product in enumerate(products, start=1):
-        inventory_data.append([
-            str(idx),
-            product.name,
-            str(product.count_inventory())  
-        ])
-    
-    inventory_table = Table(inventory_data, colWidths=[50, 300, 100])
-    inventory_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-    
-    elements.append(inventory_table)
-    
-    doc.build(elements)
-    
-    return response
-@login_required
 def sales_mgt(request):
     categories = Category.objects.prefetch_related('products').all()
     return render(request, 'sales.html', {'categories': categories})
@@ -402,38 +354,38 @@ def get_product(request,pk = None):
         resp['status'] = 'success'
     
     return HttpResponse(json.dumps(resp),content_type="application/json")
+
+
+@login_required
+
 def save_sales(request):
     resp = {'status':'failed', 'msg' : ''}
     if request.method == 'POST':
         pids = request.POST.getlist('pid[]')
         invoice_form = SaveInvoice(request.POST)
         if invoice_form.is_valid():
-            invoice_form.save()
-            invoice = Invoice.objects.last()
+            invoice = invoice_form.save()
             for pid in pids:
-                data = {
+                product_data = {
                     'invoice': invoice.id,
                     'product': pid,
-                    'quantity': request.POST.get('quantity[' + str(pid) + ']', 1),
-                    'price': request.POST.get('price[' + str(pid) + ']', 0),
+                    'quantity': request.POST.get('quantity[]'),
+                    'price': request.POST.get('price[]')
                 }
-                ii_form = SaveInvoiceItem(data)
+                ii_form = SaveInvoiceItem(product_data)
                 if ii_form.is_valid():
                     ii_form.save()
                 else:
-                    for field, errors in ii_form.errors.items():
-                        for error in errors:
-                            resp['msg'] += f"{field}: {error}<br>"
+                    invoice.delete()
+                    resp['msg'] = ii_form.errors
                     break
             else:
                 messages.success(request, "Sale Transaction has been saved.")
                 resp['status'] = 'success'
         else:
-            for field, errors in invoice_form.errors.items():
-                for error in errors:
-                    resp['msg'] += f"{field}: {error}<br>"
+            resp['msg'] = invoice_form.errors
 
-    return HttpResponse(json.dumps(resp), content_type="application/json")
+    return JsonResponse(resp)
 @login_required
 def invoices(request):
     invoice =  Invoice.objects.all()
@@ -470,6 +422,180 @@ def delete_invoice(request):
         resp['msg'] = 'Invoice has failed to delete'
     
     return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+@login_required
+def pole(request, pk=None):
+    transactions = PoleTransaction.objects.all()
+    return render(request, 'poles-transaction.html', {'transactions': transactions})
+
+@login_required
+def save_transaction(request):
+    if request.method == 'POST':
+     
+        pipes = [request.POST.get(f'pipe{i}') for i in range(1, 7)]
+        arms = [request.POST.get(f'arm{i}') for i in range(1, 4)]
+        paint = [request.POST.get(f'paint{i}') for i in range(1, 4)]
+     
+        data = {
+            'customer': request.POST['customer'],
+            'customer_code': request.POST['customer_code'],
+            'order_type': request.POST['order_type'],
+            'product_name': request.POST['product_name'],
+            'quantity': request.POST['quantity'],
+            'description': request.POST['description'],
+            'pipes': pipes,
+            'arms': arms,
+            'paint': paint,
+            'base_plate_size': request.POST.get('size'),
+            'base_plate_shape': request.POST.get('shape'),
+            'base_plate_hole_quantity': request.POST.get('hole_quantity'),
+            'base_plate_thickness': request.POST.get('thickness'),
+            'jbolt_size': request.POST.get('jsize'),
+            'jbolt_thread': request.POST.get('thread'),
+            'jbolt_bend': request.POST.get('bend'),
+            'status': request.POST.get('status'),
+            'arm_bend': request.POST.get('arm_bend'),
+            'arm_design': request.POST.get('arm_design'),
+            'silver_base': request.POST.get('silver_base'),
+            'silver_melon': request.POST.get('silver_melon'),
+            'cnc': request.POST.get('cnc'),
+            'melon': request.POST.get('melon'),
+            'nipple': request.POST.get('nipple'),
+            'iron_strips': request.POST.get('iron_strips'),
+            'breaker_strips': request.POST.get('breaker_strips'),
+            'design': request.POST.get('design'),
+            'hinge': request.POST.get('hinge'),
+            'holder': request.POST.get('holder'),
+        }
+        
+        form = PoleTransactionForm(data)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Sale Transaction has been saved.")
+            return redirect('pole-page')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+
+    return render(request, 'pole.html')
+@login_required
+def pole_history(request, pk=None):
+    context = {}
+    if pk is not None:
+        transaction = get_object_or_404(PoleTransaction, pk=pk)
+        context['transaction'] = transaction
+    context['page_title'] = 'Pole Transaction History'
+    return render(request, 'pole-history.html', context)
+
+@login_required
+def delete_transaction(request, pk):
+    
+    if request.method == 'POST':
+        transaction = get_object_or_404(PoleTransaction, pk=pk)
+        transaction.delete()
+        messages.success(request, "Transaction has been deleted.")
+      
+    return redirect('pole-page')
+
+@login_required
+def generate_pdf(request, pk):
+    transaction = PoleTransaction.objects.get(pk=pk)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="transaction_{pk}.pdf"'
+    
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+    elements = []
+    
+    # Register Algerian font
+    pdfmetrics.registerFont(TTFont('Algerian', 'Algerian.ttf'))
+    
+    # Company Name
+    elements.append(Paragraph('<font name="Algerian" color="#f89820">TEKSUN LIGHTS PVT. LTD</font>', styles["Title"]))
+    elements.append(Spacer(1, 24))
+    
+    # Title
+    elements.append(Paragraph("Project History", styles["Title"]))
+    elements.append(Spacer(1, 12))
+    
+    # Project Details Table
+    project_details_data = [
+        ["Customer Name", transaction.customer],
+        ["Customer Code", transaction.customer_code],
+        ["Project Type", transaction.order_type],
+        ["Product Name", transaction.product_name],
+        ["Quantity", str(transaction.quantity)],
+        ["Status", str(transaction.status)]
+    ]
+    
+    project_details_table = Table(project_details_data, colWidths=[150, 300])
+    project_details_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    
+    
+    elements.append(project_details_table)
+    elements.append(Spacer(1, 24))
+    
+    # Product Used Details Table
+    elements.append(Paragraph("Product Used Details", styles["Heading2"]))
+    elements.append(Spacer(1, 12))
+    
+    items_data = [
+        ["Item", "Description"],
+        ["Pipes", str(transaction.pipes)],
+        ["Arms", str(transaction.arms)],
+        ["Paint", str(transaction.paint)],
+        ["Arm Bend", str(transaction.arm_bend)],
+        ["Arm Design", str(transaction.design)],
+        ["Silver Melon", str(transaction.silver_melon)],
+        ["Silver Base", str(transaction.silver_base)],
+        ["CNC", str(transaction.cnc)],
+        ["Melon", str(transaction.melon)],
+        ["Nipple", str(transaction.nipple)],
+        ["Iron Strips", str(transaction.iron_strips)],
+        ["Breaker Strips", str(transaction.breaker_strips)],
+        ["Design", str(transaction.design)],
+        ["Hinge", str(transaction.hinge)],
+        ["Holder", str(transaction.holder)],
+        ["Base Plate Size", str(transaction.base_plate_size)],
+        ["Base Plate Shape", str(transaction.base_plate_shape)],
+        ["Base Plate Quantity", str(transaction.base_plate_hole_quantity)],
+        ["Base Plate Thickness", str(transaction.base_plate_thickness)],
+        ["J-Bolt Size", str(transaction.jbolt_size)],
+        ["J-Bolt Thread", str(transaction.jbolt_thread)],
+        ["J-Bolt Bend", str(transaction.jbolt_bend)]
+    ]
+    
+    items_table = Table(items_data, colWidths=[150, 300])
+    items_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+     
+    
+    elements.append(items_table)
+    
+    doc.build(elements)
+    
+    return response
+
+
 @login_required
 def generate_pdf_light(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
@@ -553,166 +679,55 @@ def generate_pdf_light(request, pk):
     return response
 
 @login_required
-def pole(request, pk=None):
-    transactions = PoleTransaction.objects.all()
-    return render(request, 'poles-transaction.html', {'transactions': transactions})
-@login_required
-def save_transaction(request):
-    if request.method == 'POST':
-     
-        pipes = [request.POST.get(f'pipe{i}') for i in range(1, 7)]
-        arms = [request.POST.get(f'arm{i}') for i in range(1, 4)]
-        paint = [request.POST.get(f'paint{i}') for i in range(1, 4)]
-     
-        data = {
-            'customer': request.POST['customer'],
-            'customer_code': request.POST['customer_code'],
-            'order_type': request.POST['order_type'],
-            'product_name': request.POST['product_name'],
-            'quantity': request.POST['quantity'],
-            'description': request.POST['description'],
-            'pipes': pipes,
-            'arms': arms,
-            'paint': paint,
-            'base_plate_size': request.POST.get('size'),
-            'base_plate_shape': request.POST.get('shape'),
-            'base_plate_hole_quantity': request.POST.get('hole_quantity'),
-            'base_plate_thickness': request.POST.get('thickness'),
-            'jbolt_size': request.POST.get('jsize'),
-            'jbolt_thread': request.POST.get('thread'),
-            'jbolt_bend': request.POST.get('bend'),
-            'status': request.POST.get('status'),
-            'arm_bend': request.POST.get('arm_bend'),
-            'arm_design': request.POST.get('arm_design'),
-            'silver_base': request.POST.get('silver_base'),
-            'silver_melon': request.POST.get('silver_melon'),
-            'cnc': request.POST.get('cnc'),
-            'melon': request.POST.get('melon'),
-            'nipple': request.POST.get('nipple'),
-            'iron_strips': request.POST.get('iron_strips'),
-            'breaker_strips': request.POST.get('breaker_strips'),
-            'design': request.POST.get('design'),
-            'hinge': request.POST.get('hinge'),
-            'holder': request.POST.get('holder'),
-        }
-        
-        form = PoleTransactionForm(data)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Sale Transaction has been saved.")
-            return redirect('pole-page')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-
-    return render(request, 'pole.html')
-@login_required
-def pole_history(request, pk=None):
-    context = {}
-    if pk is not None:
-        transaction = get_object_or_404(PoleTransaction, pk=pk)
-        context['transaction'] = transaction
-    context['page_title'] = 'Pole Transaction History'
-    return render(request, 'pole-history.html', context)
-
-@login_required
-def delete_transaction(request, pk):
-    
-    if request.method == 'POST':
-        transaction = get_object_or_404(PoleTransaction, pk=pk)
-        transaction.delete()
-        messages.success(request, "Transaction has been deleted.")
-      
-    return redirect('pole-page')
-@login_required
-def generate_pdf(request, pk):
-    transaction = PoleTransaction.objects.get(pk=pk)
+def generate_inventory_pdf(request):
+    products = Product.objects.all()
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="transaction_{pk}.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="inventory.pdf"'
     
     doc = SimpleDocTemplate(response, pagesize=letter)
     styles = getSampleStyleSheet()
     elements = []
     
-    # Register Algerian font
-    pdfmetrics.registerFont(TTFont('Algerian', 'Algerian.ttf'))
+  
     
-    # Company Name
-    elements.append(Paragraph('<font name="Algerian" color="#f89820">TEKSUN LIGHTS PVT. LTD</font>', styles["Title"]))
-    elements.append(Spacer(1, 24))
+    elements.append(Paragraph('<b>TEKSUN LIGHTS PVT. LTD</b>', styles["Title"]))
+    elements.append(Spacer(1, 12))
     
     # Title
-    elements.append(Paragraph("Project History", styles["Title"]))
+    elements.append(Paragraph("Inventory", styles["Title"]))
     elements.append(Spacer(1, 12))
     
-    # Project Details Table
-    project_details_data = [
-        ["Customer Name", transaction.customer],
-        ["Customer Code", transaction.customer_code],
-        ["Project Type", transaction.order_type],
-        ["Product Name", transaction.product_name],
-        ["Quantity", str(transaction.quantity)],
-        ["Status", str(transaction.status)]
+    # Inventory Table
+    inventory_data = [
+        ["Sr.", "Product", "Quantity"]
     ]
     
-    project_details_table = Table(project_details_data)
-    project_details_table.setStyle(TableStyle([
+    for idx, product in enumerate(products, start=1):
+        inventory_data.append([
+            str(idx),
+            product.name,
+            str(product.count_inventory())  
+        ])
+    
+    inventory_table = Table(inventory_data, colWidths=[50, 300, 100])
+    inventory_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 12),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
-    elements.append(project_details_table)
-    elements.append(Spacer(1, 24))
-    
-    # Product Used Details Table
-    elements.append(Paragraph("Product Used Details", styles["Heading2"]))
-    elements.append(Spacer(1, 12))
-    
-    items_data = [
-        ["Item", "Description"],
-        ["Pipes", str(transaction.pipes)],
-        ["Arms", str(transaction.arms)],
-        ["Paint", str(transaction.paint)],
-        ["Arm Bend", str(transaction.arm_bend)],
-        ["Arm Design", str(transaction.design)],
-        ["Silver Melon", str(transaction.silver_melon)],
-        ["Silver Base", str(transaction.silver_base)],
-        ["CNC", str(transaction.cnc)],
-        ["Melon", str(transaction.melon)],
-        ["Nipple", str(transaction.nipple)],
-        ["Iron Strips", str(transaction.iron_strips)],
-        ["Breaker Strips", str(transaction.breaker_strips)],
-        ["Design", str(transaction.design)],
-        ["Hinge", str(transaction.hinge)],
-        ["Holder", str(transaction.holder)],
-        ["Base Plate Size", str(transaction.base_plate_size)],
-        ["Base Plate Shape", str(transaction.base_plate_shape)],
-        ["Base Plate Quantity", str(transaction.base_plate_hole_quantity)],
-        ["Base Plate Thickness", str(transaction.base_plate_thickness)],
-        ["J-Bolt Size", str(transaction.jbolt_size)],
-        ["J-Bolt Thread", str(transaction.jbolt_thread)],
-        ["J-Bolt Bend", str(transaction.jbolt_bend)]
-    ]
-    
-    items_table = Table(items_data)
-    items_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-    
-    elements.append(items_table)
+    elements.append(inventory_table)
     
     doc.build(elements)
     
     return response
+@login_required
+def sharefile(request):
+    context['page_title'] = 'Share File'
+
+    return render(request, 'share-file.html', context)

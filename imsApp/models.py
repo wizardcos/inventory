@@ -55,6 +55,9 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.product.code + ' - ' + self.product.name
+
+     
+        
 class Invoice(models.Model):
     transaction = models.CharField(max_length=250)
     customer = models.CharField(max_length=250)
@@ -78,7 +81,7 @@ class Invoice(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.transaction
+        return self.customer
 
     def item_count(self):
         return Invoice_Item.objects.filter(invoice=self).aggregate(Sum('quantity'))['quantity__sum']
@@ -91,7 +94,7 @@ class Invoice_Item(models.Model):
     quantity = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.product.name} ({self.quantity})"
+       return f"{self.product.name} ({self.quantity})"
 
 
 

@@ -196,10 +196,6 @@ class SaveInvoiceItem(forms.ModelForm):
         except ValueError:
             raise forms.ValidationError("Quantity is not valid")
     
-
-
-
-
 class PoleTransactionForm(forms.ModelForm):
     
     class Meta:

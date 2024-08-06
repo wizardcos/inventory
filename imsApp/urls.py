@@ -46,5 +46,6 @@ urlpatterns = [
     path('pole-history/<int:pk>/', pole_history, name='pole-history-page'),
     path('delete-transaction/<int:pk>/', views.delete_transaction, name='delete-transaction'),
     path('generate_pdf/<int:pk>/', generate_pdf, name='generate_pdf'),   
+    path('share-file',views.sharefile,name='share-file'),
     
 ]
