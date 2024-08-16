@@ -103,7 +103,7 @@ Contributions are welcome! Please follow these steps to contribute:
 </ol>
 
  ## License
-This project is open source but I would like if you give credit to me.
+This project is open source but I would like if you give credit to me Thank You.
 
  ## Contact
 For any questions or feedback, please reach out to [taharajpoot204@gmail.com].
