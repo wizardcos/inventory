@@ -509,8 +509,8 @@ def generate_pdf(request, pk):
     styles = getSampleStyleSheet()
     elements = []
     
-    # Register Algerian font
-    pdfmetrics.registerFont(TTFont('Algerian', 'Algerian.ttf'))
+    font_path = os.path.join(settings.BASE_DIR, 'static/assets/font-awesome/webfonts/Algerian.ttf')
+    pdfmetrics.registerFont(TTFont('Algerian', font_path))
     
     # Company Name
     elements.append(Paragraph('<font name="Algerian" color="#f89820">TEKSUN LIGHTS PVT. LTD</font>', styles["Title"]))
@@ -606,9 +606,10 @@ def generate_pdf_light(request, pk):
     doc = SimpleDocTemplate(response, pagesize=letter)
     styles = getSampleStyleSheet()
     elements = []
-    
+
+    font_path = os.path.join(settings.BASE_DIR, 'static/assets/font-awesome/webfonts/Algerian.ttf')
     # Register Algerian font
-    pdfmetrics.registerFont(TTFont('Algerian', 'Algerian.ttf'))
+    pdfmetrics.registerFont(TTFont('Algerian', font_path))
     
     # Company Name
     elements.append(Paragraph('<font name="Algerian" color="#f89820" size="20">TEKSUN LIGHTS PVT. LTD</font>', styles["Title"]))
