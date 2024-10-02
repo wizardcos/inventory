@@ -23,7 +23,7 @@ from django.conf import settings
 import base64
 
 context = {
-    'page_title' : 'File Management System',
+    'page_title' : 'INVENTORY Management System',
 }
 #login
 def login_user(request):
@@ -123,6 +123,36 @@ def profile(request):
     return render(request, 'profile.html',context)
 
 
+@login_required
+def project_overview(request):
+    invoices = Invoice.objects.all()
+    pole_transactions = PoleTransaction.objects.all()
+    
+    overview_data = [
+        {
+            'name': invoice.product_name,
+            'owner': invoice.customer,
+            'status': invoice.status(),
+            'due_date': invoice.date_created,
+            'priority': invoice.total,
+            'progress': 75
+        } for invoice in invoices
+    ] + [
+        {
+            'name': pole.product_name,
+            'owner': pole.customer,
+            'status': pole.status(),
+            'due_date': pole.date_created,
+            'priority': pole.quantity,
+            'progress': 50
+        } for pole in pole_transactions
+    ]
+
+    context = {
+        'overview_data': overview_data,
+        'page_title': 'Project Overview'  # Added for context consistency
+    }
+    return render(request, 'project_overview.html', context)
 # Category
 @login_required
 def category_mgt(request):

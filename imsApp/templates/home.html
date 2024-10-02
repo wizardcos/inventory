@@ -58,6 +58,59 @@
     </div>
     
 </section>
+<div class="container">
+    <h1 class="my-4">Projects Overview</h1>
+
+    <!-- Table for Projects -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Project Name</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Status</th>
+                <th scope="col">Timeline</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in overview_data %}
+            <tr>
+                <td>{{ project.name }}</td>
+                <td>{{ project.owner }}</td>
+                <td>
+                    <span class="badge 
+                        {% if project.status == 'Completed' %} bg-success 
+                        {% elif project.status == 'Active' %} bg-warning 
+                        {% else %} bg-danger 
+                        {% endif %}
+                    ">
+                        {{ project.status }}
+                    </span>
+                </td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ project.progress }}%;" aria-valuenow="{{ project.progress }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ project.progress }}%
+                        </div>
+                    </div>
+                </td>
+                <td>{{ project.due_date|date:"M d, Y" }}</td>
+                <td>
+                    <span class="star-rating">
+                        {% for i in "★★★★★"|slice:":project.priority" %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% for i in "☆☆☆☆☆"|slice:":5-project.priority" %}
+                            <i class="far fa-star"></i>
+                        {% endfor %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 <section class="body1">
     <div class="div1">Optimize</div> 
      <div class="div1"> 
@@ -112,4 +165,6 @@
            </div>
           
             -->
-</div> {% endblock pageContent %} 
+</div>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+ {% endblock pageContent %} 
