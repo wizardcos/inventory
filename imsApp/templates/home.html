@@ -80,13 +80,19 @@
                 <td>{{ project.owner }}</td>
                 <td>
                     <span class="badge 
-                        {% if project.status == 'Completed' %} bg-success 
-                        {% elif project.status == 'Active' %} bg-warning 
-                        {% else %} bg-danger 
+                    {% if project.status == '2' %} bg-success 
+                    {% elif project.status == '1' %} bg-warning 
+                    {% else %} bg-danger 
+                    {% endif %}">
+                        {% if project.status == '1' %}
+                            Active
+                        {% elif project.status == '2' %}
+                            Completed
+                        {% else %}
+                            Inactive
                         {% endif %}
-                    ">
-                        {{ project.status }}
                     </span>
+                    
                 </td>
                 <td>
                     <div class="progress">
