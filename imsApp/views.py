@@ -53,11 +53,43 @@ def logoutuser(request):
 
 @login_required
 def home(request):
-    context['page_title'] = 'Home'
-    context['categories'] = Category.objects.count()
-    context['products'] = Product.objects.count()
-    context['sales'] = Invoice.objects.count()
-    return render(request, 'home.html',context)
+    # Get data for invoices and pole transactions
+    invoices = Invoice.objects.all()
+    pole_transactions = PoleTransaction.objects.all()
+    
+    # Prepare overview data
+    overview_data = [
+        {
+            'name': invoice.order_type,
+            'owner': invoice.customer,
+            'status': invoice.status,
+            'due_date': invoice.date_created,
+            'priority': invoice.total,
+            'progress': 75
+        } for invoice in invoices
+    ] + [
+        {
+            'name': pole.order_type,
+            'owner': pole.customer,
+            'status': pole.status,
+            'due_date': pole.date_created,
+            'priority': pole.quantity,
+            'progress': 50
+        } for pole in pole_transactions
+    ]
+
+    # Prepare context data
+    context = {
+        'overview_data': overview_data,
+        'page_title': 'Home',
+        'categories': Category.objects.count(),
+        'products': Product.objects.count(),
+        'sales': Invoice.objects.count(),
+    }
+    
+    # Render the home.html template
+    return render(request, 'home.html', context)
+
 
 def registerUser(request):
     user = request.user
@@ -123,43 +155,12 @@ def profile(request):
     return render(request, 'profile.html',context)
 
 
-@login_required
-def project_overview(request):
-    invoices = Invoice.objects.all()
-    pole_transactions = PoleTransaction.objects.all()
-    
-    overview_data = [
-        {
-            'name': invoice.product_name,
-            'owner': invoice.customer,
-            'status': invoice.status(),
-            'due_date': invoice.date_created,
-            'priority': invoice.total,
-            'progress': 75
-        } for invoice in invoices
-    ] + [
-        {
-            'name': pole.product_name,
-            'owner': pole.customer,
-            'status': pole.status(),
-            'due_date': pole.date_created,
-            'priority': pole.quantity,
-            'progress': 50
-        } for pole in pole_transactions
-    ]
-
-    context = {
-        'overview_data': overview_data,
-        'page_title': 'Project Overview'  # Added for context consistency
-    }
-    return render(request, 'project_overview.html', context)
 # Category
 @login_required
 def category_mgt(request):
     context['page_title'] = "Product Categories"
     categories = Category.objects.all()
     context['categories'] = categories
-
     return render(request, 'category_mgt.html', context)
 
 @login_required
@@ -210,7 +211,6 @@ def delete_category(request):
         except Exception as err:
             resp['msg'] = 'Category has failed to delete'
             print(err)
-
     else:
         resp['msg'] = 'Category has failed to delete'
     
@@ -279,14 +279,13 @@ def delete_product(request):
     
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
-#Inventory
 @login_required
 def inventory(request):
+    # Initialize the context dictionary
+    context = {}
     context['page_title'] = 'Inventory'
-
     products = Product.objects.all()
     context['products'] = products
-
     return render(request, 'inventory.html', context)
 
 #Inventory History
