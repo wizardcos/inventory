@@ -45,11 +45,12 @@ class Product(models.Model):
                 stockOut = int(stockOut) + int(stock.quantity)
         available  = stockIn - stockOut
         return available
-
+    
 class Stock(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.FloatField(default=0)
-    type = models.CharField(max_length=2,choices=(('1','Stock-in'),('2','Stock-Out')), default = 1)
+    type = models.CharField(max_length=2, choices=(('1', 'Stock-in'), ('2', 'Stock-Out')), default='1')
+    customer = models.CharField(max_length=250, blank=True, null=True)  # Add this field to store customer name
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
 
