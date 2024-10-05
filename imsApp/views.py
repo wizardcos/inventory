@@ -422,6 +422,7 @@ def save_sales(request):
             resp['msg'] = invoice_form.errors
     
     return JsonResponse(resp)
+
 @login_required
 def invoices(request):
     invoice =  Invoice.objects.all()
