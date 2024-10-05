@@ -385,27 +385,34 @@ def get_product(request,pk = None):
     return HttpResponse(json.dumps(resp),content_type="application/json")
 
 
-@login_required
 
+@login_required
 def save_sales(request):
-    resp = {'status':'failed', 'msg' : ''}
+    resp = {'status': 'failed', 'msg': ''}
+    
     if request.method == 'POST':
         pids = request.POST.getlist('pid[]')
+        quantities = request.POST.getlist('quantity[]')
+        prices = request.POST.getlist('price[]')
+        
         invoice_form = SaveInvoice(request.POST)
         if invoice_form.is_valid():
             invoice = invoice_form.save()
-            for pid in pids:
+            
+            # Loop through each product with its corresponding quantity and price
+            for idx, pid in enumerate(pids):
                 product_data = {
                     'invoice': invoice.id,
                     'product': pid,
-                    'quantity': request.POST.get('quantity[]'),
-                    'price': request.POST.get('price[]')
+                    'quantity': quantities[idx],  # Get the quantity corresponding to the current product
+                    'price': prices[idx]  # Get the price corresponding to the current product
                 }
                 ii_form = SaveInvoiceItem(product_data)
+                
                 if ii_form.is_valid():
                     ii_form.save()
                 else:
-                    invoice.delete()
+                    invoice.delete()  # Rollback invoice if any product fails to save
                     resp['msg'] = ii_form.errors
                     break
             else:
@@ -413,7 +420,7 @@ def save_sales(request):
                 resp['status'] = 'success'
         else:
             resp['msg'] = invoice_form.errors
-
+    
     return JsonResponse(resp)
 @login_required
 def invoices(request):
