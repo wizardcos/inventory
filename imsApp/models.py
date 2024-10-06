@@ -102,10 +102,14 @@ class Invoice_Item(models.Model):
 
 @receiver(models.signals.post_save, sender=Invoice_Item)
 def stock_update(sender, instance, **kwargs):
-    stock = Stock(product = instance.product, quantity = instance.quantity, type = 2)
-    stock.save()
-    
-    Invoice_Item.objects.filter(id= instance.id).update(stock=stock)
+    if instance.invoice:  # Ensure there is an invoice
+        customer_name = instance.invoice.customer  # Get customer name from Invoice
+        stock = Stock(product=instance.product, quantity=instance.quantity, type='2', customer=customer_name)  # type='2' for Stock-Out
+        stock.save()
+
+    # Update Invoice_Item to reflect the stock entry
+    Invoice_Item.objects.filter(id=instance.id).update(stock=stock)
+
 
 @receiver(models.signals.post_delete, sender=Invoice_Item)
 def delete_stock(sender, instance, **kwargs):

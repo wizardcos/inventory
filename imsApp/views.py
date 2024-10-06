@@ -397,27 +397,37 @@ def save_sales(request):
         
         invoice_form = SaveInvoice(request.POST)
         if invoice_form.is_valid():
-            invoice = invoice_form.save()
+            invoice = invoice_form.save()  # Save the invoice first
             
             # Loop through each product with its corresponding quantity and price
             for idx, pid in enumerate(pids):
                 product_data = {
                     'invoice': invoice.id,
                     'product': pid,
-                    'quantity': quantities[idx],  # Get the quantity corresponding to the current product
-                    'price': prices[idx]  # Get the price corresponding to the current product
+                    'quantity': quantities[idx],
+                    'price': prices[idx]
                 }
                 ii_form = SaveInvoiceItem(product_data)
                 
                 if ii_form.is_valid():
-                    ii_form.save()
+                    ii_form.save()  # Save invoice item
                 else:
                     invoice.delete()  # Rollback invoice if any product fails to save
                     resp['msg'] = ii_form.errors
                     break
-            else:
-                messages.success(request, "Sale Transaction has been saved.")
-                resp['status'] = 'success'
+
+            # Update stock for all items after saving the invoice
+            for item in invoice.invoice_item_set.all():
+                stock = Stock(
+                    product=item.product,
+                    quantity=item.quantity,
+                    type='2',  # Stock out
+                    customer=invoice.customer  # Use customer from the invoice
+                )
+                stock.save()
+            
+            messages.success(request, "Sale Transaction has been saved.")
+            resp['status'] = 'success'
         else:
             resp['msg'] = invoice_form.errors
     

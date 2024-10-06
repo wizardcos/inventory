@@ -58,10 +58,18 @@
                                 <td class="text-center">{{ stock.quantity|floatformat:0|intcomma }}</td>
                                 <td class="text-center">
                                     {% if stock.type == '1' %}
-                                    <span class="badge px-3 rounded-pill bg-primary bg-gradient">Stock In</span> {% else %}
-                                    <span class="badge px-3 rounded-pill bg-danger bg-gradient">Stock Out</span> {% endif %}
+                                    <span class="badge px-3 rounded-pill bg-primary bg-gradient">Stock In</span> 
+                                    {% else %}
+                                    <span class="badge px-3 rounded-pill bg-danger bg-gradient">Stock Out</span>
+                                    {% endif %}
                                 </td>
-                                <td class="text-center">{{ stock.customer }}</td>
+                                <td class="text-center">
+                                    {% if stock.type == '2' %}
+                                    {{ stock.customer }}  <!-- Show customer name for Stock Out only -->
+                                    {% else %}
+                                    ------
+                                    {% endif %}
+                                </td>
                                 <td class="text-center">
                                     {% if stock.type == '1' %}
                                     <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ stock.pk }}" title="Edit">
@@ -75,7 +83,7 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            {% endfor %}
+                            {% endfor %}                            
                         </tbody>
                     </table>
                 </fieldset>
