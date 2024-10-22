@@ -5,6 +5,7 @@ from unittest import loader
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+import git
 from ims_django.settings import MEDIA_ROOT, MEDIA_URL
 import json
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -21,10 +22,29 @@ from imsApp.models import Category, Product, Stock,PoleTransaction, Invoice, Inv
 from cryptography.fernet import Fernet
 from django.conf import settings
 import base64
-
+from django.views.decorators.csrf import csrf_exempt
 context = {
     'page_title' : 'INVENTORY Management System',
 }
+
+
+@csrf_exempt
+def update(request):
+    if request.method == "POST":
+        '''
+        pass the path of the diectory where your project will be 
+        stored on PythonAnywhere in the git.Repo() as parameter.
+        Here the name of my directory is "test.pythonanywhere.com"
+        '''
+        repo = git.Repo("/home/Taha1/inventory/")
+        origin = repo.remotes.origin
+
+        origin.pull()
+
+        return HttpResponse("Updated code on PythonAnywhere")
+    else:
+        return HttpResponse("Couldn't update the code on PythonAnywhere")
+
 #login
 def login_user(request):
     logout(request)
@@ -222,7 +242,6 @@ def product_mgt(request):
     context['page_title'] = "Product List"
     products = Product.objects.all()
     context['products'] = products
-
     return render(request, 'product_mgt.html', context)
 
 @login_required
@@ -386,6 +405,8 @@ def get_product(request,pk = None):
 
 
 
+from django.db import transaction
+
 @login_required
 def save_sales(request):
     resp = {'status': 'failed', 'msg': ''}
@@ -396,42 +417,56 @@ def save_sales(request):
         prices = request.POST.getlist('price[]')
         
         invoice_form = SaveInvoice(request.POST)
-        if invoice_form.is_valid():
-            invoice = invoice_form.save()  # Save the invoice first
-            
-            # Loop through each product with its corresponding quantity and price
-            for idx, pid in enumerate(pids):
-                product_data = {
-                    'invoice': invoice.id,
-                    'product': pid,
-                    'quantity': quantities[idx],
-                    'price': prices[idx]
-                }
-                ii_form = SaveInvoiceItem(product_data)
-                
-                if ii_form.is_valid():
-                    ii_form.save()  # Save invoice item
-                else:
-                    invoice.delete()  # Rollback invoice if any product fails to save
-                    resp['msg'] = ii_form.errors
-                    break
+        
+        try:
+            with transaction.atomic():  # Start a database transaction
+                if invoice_form.is_valid():
+                    invoice = invoice_form.save()  # Save the invoice first
+                    
+                    # Loop through each product with its corresponding quantity and price
+                    for idx, pid in enumerate(pids):
+                        product_data = {
+                            'invoice': invoice.id,
+                            'product': pid,
+                            'quantity': quantities[idx],
+                            'price': prices[idx]
+                        }
+                        ii_form = SaveInvoiceItem(product_data)
+                        
+                        if ii_form.is_valid():
+                            ii_form.save()  # Save invoice item
+                        else:
+                            raise Exception(ii_form.errors)  # Rollback if there's an error
 
-            # Update stock for all items after saving the invoice
-            for item in invoice.invoice_item_set.all():
-                stock = Stock(
-                    product=item.product,
-                    quantity=item.quantity,
-                    type='2',  # Stock out
-                    customer=invoice.customer  # Use customer from the invoice
-                )
-                stock.save()
-            
-            messages.success(request, "Sale Transaction has been saved.")
-            resp['status'] = 'success'
-        else:
-            resp['msg'] = invoice_form.errors
+                    # Update stock for all items after saving the invoice
+                    for idx, pid in enumerate(pids):
+                        product = Product.objects.get(id=pid)
+                        stock_entry = Stock.objects.filter(
+                            product=product,
+                            quantity=quantities[idx],
+                            type='2',  # Stock out
+                            customer=invoice.customer
+                        ).exists()
+                        
+                        # Check if stock has not been already updated for this item
+                        if not stock_entry:
+                            stock = Stock(
+                                product=product,
+                                quantity=quantities[idx],
+                                type='2',  # Stock out
+                                customer=invoice.customer  # Use customer from the invoice
+                            )
+                            stock.save()
+                    
+                    messages.success(request, "Sale Transaction has been saved.")
+                    resp['status'] = 'success'
+                else:
+                    resp['msg'] = invoice_form.errors
+        except Exception as e:
+            resp['msg'] = str(e)
     
     return JsonResponse(resp)
+
 
 @login_required
 def invoices(request):
