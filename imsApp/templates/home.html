@@ -62,37 +62,28 @@
     <h1 class="my-4">Projects Overview</h1>
 
     <!-- Table for Projects -->
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">Project Name</th>
-                <th scope="col">Owner</th>
-                <th scope="col">Status</th>
-                <th scope="col">Timeline</th>
-                <th scope="col">Due Date</th>
-                <th scope="col">Priority</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for project in overview_data %}
+   <!-- Table for Projects -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Project Name</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Status</th>
+            <th scope="col">Timeline</th>
+            <th scope="col">Due Date</th>
+            <th scope="col">Priority</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in overview_data %}
+            {% if project.status == '1' %} <!-- Show only Active projects -->
             <tr>
                 <td>{{ project.name }}</td>
                 <td>{{ project.owner }}</td>
                 <td>
-                    <span class="badge 
-                    {% if project.status == '2' %} bg-success 
-                    {% elif project.status == '1' %} bg-warning 
-                    {% else %} bg-danger 
-                    {% endif %}">
-                        {% if project.status == '1' %}
-                            Active
-                        {% elif project.status == '2' %}
-                            Completed
-                        {% else %}
-                            Inactive
-                        {% endif %}
+                    <span class="badge bg-warning">
+                        Active
                     </span>
-                    
                 </td>
                 <td>
                     <div class="progress">
@@ -113,10 +104,11 @@
                     </span>
                 </td>
             </tr>
-            {% endfor %}
-        </tbody>
-        
-    </table>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
 </div>
 <section class="body1">
     <div class="div1">Optimize</div> 
