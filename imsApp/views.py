@@ -12,7 +12,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet,ParagraphStyle
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -21,7 +21,6 @@ from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePassw
 from imsApp.models import Category, Product, Stock,PoleTransaction, Invoice, Invoice_Item
 from cryptography.fernet import Fernet
 from django.conf import settings
-import base64
 from django.views.decorators.csrf import csrf_exempt
 context = {
     'page_title' : 'INVENTORY Management System',
@@ -31,16 +30,9 @@ context = {
 @csrf_exempt
 def update(request):
     if request.method == "POST":
-        '''
-        pass the path of the diectory where your project will be 
-        stored on PythonAnywhere in the git.Repo() as parameter.
-        Here the name of my directory is "test.pythonanywhere.com"
-        '''
         repo = git.Repo("/home/Taha1/inventory/")
         origin = repo.remotes.origin
-
         origin.pull()
-
         return HttpResponse("Updated code on PythonAnywhere")
     else:
         return HttpResponse("Couldn't update the code on PythonAnywhere")
@@ -467,7 +459,6 @@ def save_sales(request):
     
     return JsonResponse(resp)
 
-
 @login_required
 def invoices(request):
     invoice =  Invoice.objects.all()
@@ -484,7 +475,6 @@ def invoice_history(request, pk=None):
         context['invoice_items'] = invoice_items
     context['page_title'] = 'Project History'
     return render(request, 'project-history.html', context)
-
 
 @login_required
 def delete_invoice(request):
@@ -812,5 +802,4 @@ def generate_inventory_pdf(request):
 @login_required
 def sharefile(request):
     context['page_title'] = 'Share File'
-
     return render(request, 'share-file.html', context)
