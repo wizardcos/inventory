@@ -30,7 +30,7 @@ context = {
 @csrf_exempt
 def update(request):
     if request.method == "POST":
-        repo = git.Repo("/home/Taha1/inventory/")
+        repo = git.Repo("Taha1.pythonanywhere.com")
         origin = repo.remotes.origin
         origin.pull()
         return HttpResponse("Updated code on PythonAnywhere")
