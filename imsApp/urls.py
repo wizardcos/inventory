@@ -48,5 +48,4 @@ urlpatterns = [
     path('generate_pdf/<int:pk>/', generate_pdf, name='generate_pdf'),   
     path('share-file',views.sharefile,name='share-file'),
     path("update_server/", views.update, name="update"),
-    
 ]
